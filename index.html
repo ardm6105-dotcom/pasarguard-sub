@@ -72,6 +72,12 @@ button:active,.btn:active{transform:scale(.96)}
 .loc em{font-style:normal;font-size:10.5px;color:var(--mute);background:var(--btn);padding:3px 8px;border-radius:99px;direction:ltr}
 .loc button{background:var(--btn);color:var(--text);padding:8px 12px;font-size:12px}
 .lqr{background:#fff;border-radius:14px;padding:10px;width:fit-content;margin:4px auto 10px;color:#333;font-size:12px}
+.cfgrow{display:grid;gap:8px;padding:10px 0;border-top:1px solid var(--line)}
+.cfgrow .top{display:flex;align-items:center;gap:8px}
+.cfgrow .n{flex:1;font-size:13.5px;font-weight:600;min-width:0;word-break:break-word}
+.cfgrow em{font-style:normal;font-size:10.5px;color:var(--mute);background:var(--btn);padding:3px 8px;border-radius:99px;direction:ltr}
+.cfgrow .acts{display:flex;gap:8px}
+.cfgrow .acts button{flex:1;background:var(--btn);color:var(--text);padding:9px 6px;font-size:12px}
 #qr{background:#fff;border-radius:16px;padding:12px;width:fit-content;margin:16px auto 0}
 details.q summary{cursor:pointer;font-weight:700;font-size:13.5px;margin-top:14px;color:var(--mute)}
 .note{display:block;text-align:center;font-size:13px;line-height:1.9;color:var(--text);text-decoration:none;background:rgba(255,176,32,.14);border-color:rgba(255,176,32,.4);padding:14px 18px}
@@ -159,7 +165,7 @@ footer{text-align:center;font-size:11.5px;color:var(--mute)}
       left:'حجم باقی‌مانده',unl:'حجم نامحدود',unlv:'نامحدود',used:'مصرف‌شده',total:'حجم کل',days:'روز باقی‌مانده',exp:'تاریخ انقضا',
       seen:'آخرین اتصال',upd:'آخرین آپدیت اشتراک',online:'آنلاین',never:'هنوز نه',elapsed:'زمان سپری‌شده',ended:'تمام شده',dayu:'روز',
       sub:'لینک اشتراک',copy:'کپی',copied:'کپی شد ✓',qr:'نمایش QR کد',locs:'لوکیشن‌های موجود',noloc:'فعلاً لوکیشنی برای این اشتراک فعال نیست.',
-      other:'سایر',server:'سرور',qrbtn:'QR',qrfail:'لینک برای QR خیلی بلنده',dl:'دانلود و اتصال',and:'اندروید',ios:'آیفون',pc:'کامپیوتر',
+      other:'سایر',server:'سرور',qrbtn:'QR کد',cname:'کپی اسم',ccfg:'کپی کانفیگ',qrfail:'لینک برای QR خیلی بلنده',dl:'دانلود و اتصال',and:'اندروید',ios:'آیفون',pc:'کامپیوتر',
       get:'دانلود',add:'افزودن',n1:'پیشنهادی، ساده و سریع',n2:'با زدن «افزودن» لینک هم کپی میشه',n3:'پیشنهادی برای آیفون',n4:'نسخه iOS',n5:'ویندوز، مک و لینوکس',
       guide:'آموزش سریع',s1:'برنامه‌ی بالا رو نصب کن.',s2:'دکمه‌ی «افزودن» رو بزن تا لینک اشتراک خودکار وارد برنامه بشه. اگه نشد، لینک رو کپی کن و تو برنامه «افزودن از کلیپ‌بورد» رو بزن.',
       s3:'یه لوکیشن انتخاب کن و دکمه‌ی اتصال رو بزن.',support:'💬 پشتیبانی',
@@ -168,7 +174,7 @@ footer{text-align:center;font-size:11.5px;color:var(--mute)}
       left:'Data remaining',unl:'Unlimited data',unlv:'Unlimited',used:'Used',total:'Total',days:'Days left',exp:'Expires on',
       seen:'Last seen',upd:'Last sub update',online:'Online',never:'Not yet',elapsed:'Time elapsed',ended:'Ended',dayu:'days',
       sub:'Subscription link',copy:'Copy',copied:'Copied ✓',qr:'Show QR code',locs:'Available locations',noloc:'No active locations for this subscription.',
-      other:'Other',server:'Server',qrbtn:'QR',qrfail:'Link is too long for a QR code',dl:'Download & connect',and:'Android',ios:'iPhone',pc:'Desktop',
+      other:'Other',server:'Server',qrbtn:'QR',cname:'Copy name',ccfg:'Copy config',qrfail:'Link is too long for a QR code',dl:'Download & connect',and:'Android',ios:'iPhone',pc:'Desktop',
       get:'Get',add:'Add',n1:'Recommended, simple & fast',n2:'Tapping Add also copies the link',n3:'Best for iPhone',n4:'iOS version',n5:'Windows, Mac & Linux',
       guide:'Quick guide',s1:'Install the app above.',s2:'Tap "Add" to import your subscription automatically. If that fails, copy the link and use "Add from clipboard" in the app.',
       s3:'Pick a location and tap connect.',support:'💬 Support',
@@ -268,8 +274,9 @@ footer{text-align:center;font-size:11.5px;color:var(--mute)}
   $('lang').onclick = function(){ lang = lang==='fa'?'en':'fa'; try{localStorage.setItem('sl',lang)}catch(e){} applyLang(); };
   $('theme').onclick = function(){ theme = theme==='dark'?'light':'dark'; try{localStorage.setItem('st',theme)}catch(e){} applyTheme(); };
 
-  function copy(text, btn){
-    var done = function(){ btn.textContent=t('copied'); setTimeout(function(){btn.textContent=t('copy')},1600) };
+  function copy(text, btn, lbl){
+    var old = lbl || t('copy');
+    var done = function(){ btn.textContent=t('copied'); setTimeout(function(){btn.textContent=old},1600) };
     if(navigator.clipboard) navigator.clipboard.writeText(text).then(done);
     else { var x=document.createElement('textarea'); x.value=text; document.body.appendChild(x); x.select(); document.execCommand('copy'); x.remove(); done(); }
   }
@@ -304,11 +311,20 @@ footer{text-align:center;font-size:11.5px;color:var(--mute)}
   function country(code){
     try{ return new Intl.DisplayNames([lang],{type:'region'}).of(code); }catch(e){ return code; }
   }
+  function showQR(qb,v){
+    if(qb.firstChild) return;
+    try{ new QRCode(qb,{text:v,width:200,height:200,correctLevel:QRCode.CorrectLevel.L}); }
+    catch(e){ qb.textContent = t('qrfail'); }
+  }
   function renderLocs(list){
     var box = $('locs'); box.innerHTML = '';
     list = (list||[]).filter(Boolean);
     $('locN').textContent = list.length ? '('+nf(list.length)+')' : '';
-    if(!list.length){ box.appendChild(mk('div','grp')).appendChild(mk('div','loc',t('noloc'))); return; }
+    if(!list.length){
+      var eg = mk('div','grp'); eg.appendChild(mk('div','loc',t('noloc')));
+      if(S.dbg){ var dg = mk('div','loc',S.dbg); dg.style.cssText='direction:ltr;font-size:11px;color:var(--mute);word-break:break-all'; eg.appendChild(dg); }
+      box.appendChild(eg); return;
+    }
     var groups = {}, order = [];
     list.forEach(function(v,idx){
       var r = remark(v), m = r.match(/[\u{1F1E6}-\u{1F1FF}]{2}/u), code = '', flag = '🌐';
@@ -316,7 +332,7 @@ footer{text-align:center;font-size:11.5px;color:var(--mute)}
       var name = (m ? r.replace(m[0],'') : r).replace(/^[\s|\-–]+/,'').trim() || (t('server')+' '+nf(idx+1));
       var k = code || '--';
       if(!groups[k]){ groups[k] = {flag:flag, code:code, items:[]}; order.push(k); }
-      groups[k].items.push({v:v,name:name});
+      groups[k].items.push({v:v,name:name,full:r||name});
     });
     order.forEach(function(k){
       var g = groups[k], d = mk('details','grp'); d.open = true;
@@ -324,20 +340,16 @@ footer{text-align:center;font-size:11.5px;color:var(--mute)}
       s.appendChild(mk('span','',g.code ? country(g.code) : t('other')));
       s.appendChild(mk('em','',nf(g.items.length))); d.appendChild(s);
       g.items.forEach(function(it){
-        var row = mk('div','loc');
-        row.appendChild(mk('span','n',it.name));
-        row.appendChild(mk('em','',it.v.split('://')[0].toUpperCase()));
-        var q = mk('button','',t('qrbtn')), c = mk('button','',t('copy')), qb = mk('div','lqr'); qb.hidden = true;
-        c.onclick = function(){ copy(it.v,c) };
-        q.onclick = function(){
-          qb.hidden = !qb.hidden;
-          if(!qb.hidden && !qb.firstChild){
-            try{ new QRCode(qb,{text:it.v,width:200,height:200,correctLevel:QRCode.CorrectLevel.L}); }
-            catch(e){ qb.textContent = t('qrfail'); }
-          }
-        };
-        row.appendChild(q); row.appendChild(c);
-        var wrap = mk('div'); wrap.appendChild(row); wrap.appendChild(qb); d.appendChild(wrap);
+        var row = mk('div','cfgrow'), top = mk('div','top'), acts = mk('div','acts'), qb = mk('div','lqr');
+        top.appendChild(mk('span','n',it.name)); top.appendChild(mk('em','',it.v.split('://')[0].toUpperCase()));
+        var bn = mk('button','',t('cname')), bc = mk('button','',t('ccfg')), bq = mk('button','',t('qrbtn'));
+        bn.onclick = function(){ copy(it.full,bn,t('cname')) };
+        bc.onclick = function(){ copy(it.v,bc,t('ccfg')) };
+        qb.hidden = list.length > 4;
+        if(!qb.hidden) showQR(qb,it.v);
+        bq.onclick = function(){ qb.hidden = !qb.hidden; if(!qb.hidden) showQR(qb,it.v); };
+        acts.appendChild(bn); acts.appendChild(bc); acts.appendChild(bq);
+        row.appendChild(top); row.appendChild(acts); row.appendChild(qb); d.appendChild(row);
       });
       box.appendChild(d);
     });
@@ -356,17 +368,26 @@ footer{text-align:center;font-size:11.5px;color:var(--mute)}
     if(a){ var n = $('note'); n.textContent = a; if(au) n.href = au; n.hidden = false; }
     setLinks(); render();
   }).catch(function(){});
+  function parseLinks(x){
+    x = (x||'').trim(); if(!x) return [];
+    var txt = x;
+    if(!/:\/\//.test(x)){
+      try{ txt = decodeURIComponent(escape(atob(x.replace(/-/g,'+').replace(/_/g,'/')))); }
+      catch(e){ try{ txt = atob(x); }catch(_){ return []; } }
+    }
+    return txt.split(/\r?\n/).map(function(l){return l.trim()}).filter(function(l){return /^(vless|vmess|trojan|ss|hysteria2?|tuic|wireguard):\/\//i.test(l)});
+  }
   function loadLinks(){
-    fetch(base+'/v2ray').then(function(r){ return r.ok ? r.text() : ''; }).then(function(x){
-      x = (x||'').trim(); if(!x) return;
-      var txt = x;
-      if(!/:\/\//.test(x)){
-        try{ txt = decodeURIComponent(escape(atob(x.replace(/-/g,'+').replace(/_/g,'/')))); }
-        catch(e){ try{ txt = atob(x); }catch(_){ return; } }
-      }
-      var arr = txt.split(/\r?\n/).map(function(l){return l.trim()}).filter(function(l){return /^[a-z][a-z0-9+.-]*:\/\//i.test(l)});
-      if(arr.length){ S.links = arr; renderLocs(S.links); }
-    }).catch(function(){});
+    if((S.tried||0) >= 3) return; S.tried = (S.tried||0) + 1;
+    var paths = ['/links','/v2ray','/links_base64','/'], log = [], i = 0;
+    (function next(){
+      if(i >= paths.length){ S.dbg = log.join('   '); renderLocs(S.links); return; }
+      var pth = paths[i++];
+      fetch(base+pth).then(function(r){ log.push(pth+' : '+r.status); return r.ok ? r.text() : ''; }).then(function(x){
+        var arr = parseLinks(x);
+        if(arr.length){ S.links = arr; S.dbg = ''; renderLocs(S.links); } else next();
+      }).catch(function(){ log.push(pth+' : err'); next(); });
+    })();
   }
   function live(){
     fetch(base+'/info').then(function(r){ return r.json(); }).then(function(u){
