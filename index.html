@@ -134,7 +134,7 @@ footer{text-align:center;font-size:11.5px;color:var(--mute)}
     <div class="tabs"><button data-t="and" data-i="and"></button><button data-t="ios" data-i="ios"></button><button data-t="pc" data-i="pc"></button></div>
     <div class="pane" id="and">
       <div class="app"><div><b>Hiddify</b><small data-i="n1"></small></div><a class="btn" href="https://play.google.com/store/apps/details?id=app.hiddify.com" target="_blank" data-i="get"></a><a class="btn go" id="h1" data-i="add"></a></div>
-      <div class="app"><div><b>v2rayNG</b><small data-i="n2"></small></div><a class="btn" href="https://github.com/2dust/v2rayNG/releases" target="_blank" data-i="get"></a><a class="btn go" id="v1" data-i="add"></a></div>
+      <div class="app"><div><b>v2rayNG</b><small data-i="n2"></small></div><a class="btn" href="https://github.com/2dust/v2rayNG/releases" target="_blank" data-i="get"></a><a class="btn go" id="v1" data-i="add"></a><a class="btn go" id="v1b" data-i="add2"></a></div>
     </div>
     <div class="pane" id="ios">
       <div class="app"><div><b>Streisand</b><small data-i="n3"></small></div><a class="btn" href="https://apps.apple.com/app/streisand/id6450534064" target="_blank" data-i="get"></a><a class="btn go" id="s1" data-i="add"></a></div>
@@ -166,7 +166,7 @@ footer{text-align:center;font-size:11.5px;color:var(--mute)}
       seen:'آخرین اتصال',upd:'آخرین آپدیت اشتراک',online:'آنلاین',never:'هنوز نه',elapsed:'زمان سپری‌شده',ended:'تمام شده',dayu:'روز',
       sub:'لینک اشتراک',copy:'کپی',copied:'کپی شد ✓',qr:'نمایش QR کد',locs:'لوکیشن‌های موجود',noloc:'فعلاً لوکیشنی برای این اشتراک فعال نیست.',
       other:'سایر',server:'سرور',qrbtn:'QR کد',cname:'کپی اسم',ccfg:'کپی کانفیگ',qrfail:'لینک برای QR خیلی بلنده',dl:'دانلود و اتصال',and:'اندروید',ios:'آیفون',pc:'کامپیوتر',
-      get:'دانلود',add:'افزودن',n1:'پیشنهادی، ساده و سریع',n2:'با زدن «افزودن» لینک هم کپی میشه',n3:'پیشنهادی برای آیفون',n4:'نسخه iOS',n5:'ویندوز، مک و لینوکس',
+      get:'دانلود',add:'افزودن',add2:'روش ۲',n1:'پیشنهادی، ساده و سریع',n2:'با زدن «افزودن» لینک هم کپی میشه',n3:'پیشنهادی برای آیفون',n4:'نسخه iOS',n5:'ویندوز، مک و لینوکس',
       guide:'آموزش سریع',s1:'برنامه‌ی بالا رو نصب کن.',s2:'دکمه‌ی «افزودن» رو بزن تا لینک اشتراک خودکار وارد برنامه بشه. اگه نشد، لینک رو کپی کن و تو برنامه «افزودن از کلیپ‌بورد» رو بزن.',
       s3:'یه لوکیشن انتخاب کن و دکمه‌ی اتصال رو بزن.',support:'💬 پشتیبانی',
       ago_s:'لحظاتی پیش',ago_m:' دقیقه پیش',ago_h:' ساعت پیش',ago_d:' روز پیش',other_lang:'English'},
@@ -175,7 +175,7 @@ footer{text-align:center;font-size:11.5px;color:var(--mute)}
       seen:'Last seen',upd:'Last sub update',online:'Online',never:'Not yet',elapsed:'Time elapsed',ended:'Ended',dayu:'days',
       sub:'Subscription link',copy:'Copy',copied:'Copied ✓',qr:'Show QR code',locs:'Available locations',noloc:'No active locations for this subscription.',
       other:'Other',server:'Server',qrbtn:'QR',cname:'Copy name',ccfg:'Copy config',qrfail:'Link is too long for a QR code',dl:'Download & connect',and:'Android',ios:'iPhone',pc:'Desktop',
-      get:'Get',add:'Add',n1:'Recommended, simple & fast',n2:'Tapping Add also copies the link',n3:'Best for iPhone',n4:'iOS version',n5:'Windows, Mac & Linux',
+      get:'Get',add:'Add',add2:'Alt',n1:'Recommended, simple & fast',n2:'Tapping Add also copies the link',n3:'Best for iPhone',n4:'iOS version',n5:'Windows, Mac & Linux',
       guide:'Quick guide',s1:'Install the app above.',s2:'Tap "Add" to import your subscription automatically. If that fails, copy the link and use "Add from clipboard" in the app.',
       s3:'Pick a location and tap connect.',support:'💬 Support',
       ago_s:'just now',ago_m:' min ago',ago_h:' h ago',ago_d:' d ago',other_lang:'فارسی'}
@@ -285,8 +285,10 @@ footer{text-align:center;font-size:11.5px;color:var(--mute)}
   function setLinks(){
     $('support').href = SUPPORT || '#'; $('support').style.display = SUPPORT ? '' : 'none';
     $('h1').href = $('h2').href = $('h3').href = 'hiddify://import/'+url+'#'+encodeURIComponent(USER);
-    $('v1').href = 'v2rayng://install-sub/?url='+encodeURIComponent(url+'#'+USER);
-    $('v1').onclick = function(){ try{ navigator.clipboard.writeText(url); }catch(e){} };
+    var enc = encodeURIComponent(url);
+    $('v1').href  = 'intent://install-sub?url='+enc+'#Intent;scheme=v2rayng;package=com.v2ray.ang;end';
+    $('v1b').href = 'v2rayng://install-sub?url='+enc;
+    $('v1').onclick = $('v1b').onclick = function(){ try{ navigator.clipboard.writeText(url); }catch(e){} };
     $('s1').href = 'streisand://import/'+url;
   }
   setLinks();
